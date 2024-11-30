@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { defaultArticleState, fontFamilyOptions, fontSizeOptions, fontColors, backgroundColors, contentWidthArr } from 'src/constants/articleProps'
+import { useState, useRef, useEffect, SyntheticEvent } from 'react';
+import { defaultArticleState, fontFamilyOptions, fontSizeOptions, fontColors, backgroundColors, contentWidthArr, OptionType } from 'src/constants/articleProps'
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { Text } from 'src/ui/text';
@@ -9,13 +9,18 @@ import { Separator } from 'src/ui/separator'
 
 import styles from './ArticleParamsForm.module.scss';
 
-export const ArticleParamsForm = () => {
-	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-	const menuRef = useRef<HTMLElement | null>(null);
+type MenuState = {
+	fontFamilyOption: OptionType;
+	fontColor: OptionType;
+	backgroundColor: OptionType;
+	contentWidth: OptionType;
+	fontSizeOption: OptionType;
+}
 
-	const handleMenuToggle = () => {
-		setIsMenuOpen(prev => !prev);
-	};
+export const ArticleParamsForm = () => {
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
+	const [menuState, setMenuState] = useState<MenuState>(defaultArticleState);
+	const menuRef = useRef<HTMLElement | null>(null);
 
 	useEffect(() => {
 		const handleClickOutside = (evt: MouseEvent) => {
@@ -30,6 +35,26 @@ export const ArticleParamsForm = () => {
 		};
 	}, [isMenuOpen]);
 
+	const handleMenuToggle = () => {
+		setIsMenuOpen(prev => !prev);
+	};
+
+	const handleParamChange = (key: keyof MenuState) => (value: OptionType) => {
+		setMenuState((prevState) => ({
+			...prevState,
+			[key]: value,
+		}));
+	};
+
+	const handleParamsReset = () => {
+		setMenuState(defaultArticleState)
+	}
+
+	const handleFormSubmit = (evt: SyntheticEvent) => {
+		evt.preventDefault()
+		console.log(menuState);
+	}
+
 	return (
 		<>
 			<ArrowButton isOpen={isMenuOpen} onClick={handleMenuToggle} />
@@ -37,7 +62,7 @@ export const ArticleParamsForm = () => {
 				ref={menuRef}
 				className={`${styles.container} ${isMenuOpen ? styles.container_open : ''}`}
 			>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={handleFormSubmit} onReset={handleParamsReset}>
 					<Text
 						as='h2'
 						size={31}
@@ -50,42 +75,42 @@ export const ArticleParamsForm = () => {
 						Задайте параметры
 					</Text>
 					<Select
-						selected={defaultArticleState.fontFamilyOption}
+						selected={menuState.fontFamilyOption}
 						options={fontFamilyOptions}
 						placeholder='Выберите шрифт'
-						onChange={() => { }}
+						onChange={handleParamChange("fontFamilyOption")}
 						onClose={() => { }}
 						title='Шрифт'
 					/>
 					<RadioGroup
 						name='fontSize'
-						selected={defaultArticleState.fontSizeOption}
+						selected={menuState.fontSizeOption}
 						options={fontSizeOptions}
-						onChange={() => { }}
+						onChange={handleParamChange("fontSizeOption")}
 						title='Размер шрифта'
 					/>
 					<Select
-						selected={defaultArticleState.fontColor}
+						selected={menuState.fontColor}
 						options={fontColors}
 						placeholder='Выберите цвет шрифта'
-						onChange={() => { }}
+						onChange={handleParamChange("fontColor")}
 						onClose={() => { }}
 						title='Цвет шрифта'
 					/>
 					<Separator />
 					<Select
-						selected={defaultArticleState.backgroundColor}
+						selected={menuState.backgroundColor}
 						options={backgroundColors}
 						placeholder='Выберите цвет фона'
-						onChange={() => { }}
+						onChange={handleParamChange("backgroundColor")}
 						onClose={() => { }}
 						title='Цвет фона'
 					/>
 					<Select
-						selected={defaultArticleState.contentWidth}
+						selected={menuState.contentWidth}
 						options={contentWidthArr}
 						placeholder='Выберите ширину контента'
-						onChange={() => { }}
+						onChange={handleParamChange("contentWidth")}
 						onClose={() => { }}
 						title='Ширина контента'
 					/>
