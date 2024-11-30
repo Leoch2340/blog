@@ -9,7 +9,7 @@ import { Separator } from 'src/ui/separator'
 
 import styles from './ArticleParamsForm.module.scss';
 
-type MenuState = {
+export type MenuState = {
 	fontFamilyOption: OptionType;
 	fontColor: OptionType;
 	backgroundColor: OptionType;
@@ -17,7 +17,11 @@ type MenuState = {
 	fontSizeOption: OptionType;
 }
 
-export const ArticleParamsForm = () => {
+type ArticleParamsFormProps = {
+	onSubmit: (params: MenuState) => void;
+}
+
+export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
 	const [menuState, setMenuState] = useState<MenuState>(defaultArticleState);
 	const menuRef = useRef<HTMLElement | null>(null);
@@ -52,7 +56,7 @@ export const ArticleParamsForm = () => {
 
 	const handleFormSubmit = (evt: SyntheticEvent) => {
 		evt.preventDefault()
-		console.log(menuState);
+		props.onSubmit(menuState)
 	}
 
 	return (
