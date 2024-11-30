@@ -18,6 +18,7 @@ import { Separator } from 'src/ui/separator';
 import styles from './ArticleParamsForm.module.scss';
 
 import { useClose } from 'src/hooks/useClose'
+import clsx from 'clsx';
 
 export type MenuState = {
 	fontFamilyOption: OptionType;
@@ -67,13 +68,16 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 		rootRef: menuRef
 	})
 
+	const menuClassName = clsx(styles.container, {
+		[styles.container_open]: isMenuOpen
+	})
+
 	return (
 		<>
 			<ArrowButton isOpen={isMenuOpen} onClick={handleMenuToggle} />
 			<aside
 				ref={menuRef}
-				className={`${styles.container} ${isMenuOpen ? styles.container_open : ''
-					}`}>
+				className={menuClassName}>
 				<form
 					className={styles.form}
 					onSubmit={handleFormSubmit}
