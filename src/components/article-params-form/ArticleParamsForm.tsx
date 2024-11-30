@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, SyntheticEvent } from 'react';
+import { useState, useRef, SyntheticEvent } from 'react';
 import {
 	defaultArticleState,
 	fontFamilyOptions,
@@ -17,6 +17,8 @@ import { Separator } from 'src/ui/separator';
 
 import styles from './ArticleParamsForm.module.scss';
 
+import { useClose } from 'src/hooks/useClose'
+
 export type MenuState = {
 	fontFamilyOption: OptionType;
 	fontColor: OptionType;
@@ -34,22 +36,13 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const [menuState, setMenuState] = useState<MenuState>(defaultArticleState);
 	const menuRef = useRef<HTMLElement | null>(null);
 
-	useEffect(() => {
-		const handleClickOutside = (evt: MouseEvent) => {
-			if (menuRef.current && !menuRef.current.contains(evt.target as Node)) {
-				setIsMenuOpen(false);
-			}
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [isMenuOpen]);
-
 	const handleMenuToggle = () => {
 		setIsMenuOpen((prev) => !prev);
 	};
+
+	const handleMenuClose = () => {
+		setIsMenuOpen(false);
+	}
 
 	const handleParamChange = (key: keyof MenuState) => (value: OptionType) => {
 		setMenuState((prevState) => ({
@@ -68,14 +61,19 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 		props.onSubmit(menuState);
 	};
 
+	useClose({
+		isOpen: isMenuOpen,
+		onClose: handleMenuClose,
+		rootRef: menuRef
+	})
+
 	return (
 		<>
 			<ArrowButton isOpen={isMenuOpen} onClick={handleMenuToggle} />
 			<aside
 				ref={menuRef}
-				className={`${styles.container} ${
-					isMenuOpen ? styles.container_open : ''
-				}`}>
+				className={`${styles.container} ${isMenuOpen ? styles.container_open : ''
+					}`}>
 				<form
 					className={styles.form}
 					onSubmit={handleFormSubmit}
@@ -95,7 +93,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						options={fontFamilyOptions}
 						placeholder='Выберите шрифт'
 						onChange={handleParamChange('fontFamilyOption')}
-						onClose={() => {}}
+						onClose={() => { }}
 						title='Шрифт'
 					/>
 					<RadioGroup
@@ -110,7 +108,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						options={fontColors}
 						placeholder='Выберите цвет шрифта'
 						onChange={handleParamChange('fontColor')}
-						onClose={() => {}}
+						onClose={() => { }}
 						title='Цвет шрифта'
 					/>
 					<Separator />
@@ -119,7 +117,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						options={backgroundColors}
 						placeholder='Выберите цвет фона'
 						onChange={handleParamChange('backgroundColor')}
-						onClose={() => {}}
+						onClose={() => { }}
 						title='Цвет фона'
 					/>
 					<Select
@@ -127,7 +125,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 						options={contentWidthArr}
 						placeholder='Выберите ширину контента'
 						onChange={handleParamChange('contentWidth')}
-						onClose={() => {}}
+						onClose={() => { }}
 						title='Ширина контента'
 					/>
 					<div className={styles.bottomContainer}>
