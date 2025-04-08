@@ -1,20 +1,24 @@
+// Экспорт константы с классами шрифтов в виде массива строк
 export const fontFamilyClasses = [
 	'open-sans',
 	'ubuntu',
 	'cormorant-garamond',
 	'days-one',
 	'merriweather',
-] as const;
+] as const; // as const делает массив read-only (только для чтения)
 
+// Создание типа FontFamiliesClasses, который представляет собой объединение всех элементов массива fontFamilyClasses
 export type FontFamiliesClasses = (typeof fontFamilyClasses)[number];
 
+// Определение типа OptionType для опций с такими свойствами:
 export type OptionType = {
-	title: string;
-	value: string;
-	className: string;
-	optionClassName?: string;
+	title: string; // Отображаемое название
+	value: string; // Значение опции
+	className: string; // CSS-класс
+	optionClassName?: string; // Необязательный CSS-класс для опции
 };
 
+// Экспорт массива опций шрифтов с дополнительным типом для optionClassName
 export const fontFamilyOptions: OptionType[] & {
 	optionClassName?: FontFamiliesClasses;
 } = [
@@ -33,6 +37,7 @@ export const fontFamilyOptions: OptionType[] & {
 	},
 ];
 
+// Экспорт массива опций цветов текста
 export const fontColors: OptionType[] = [
 	{
 		title: 'Черный',
@@ -90,6 +95,7 @@ export const fontColors: OptionType[] = [
 	},
 ];
 
+// Экспорт массива опций цветов фона
 export const backgroundColors: OptionType[] = [
 	{
 		title: 'Белый',
@@ -147,6 +153,7 @@ export const backgroundColors: OptionType[] = [
 	},
 ];
 
+// Экспорт массива опций ширины контента
 export const contentWidthArr: OptionType[] = [
 	{
 		title: 'Широкий',
@@ -162,18 +169,21 @@ export const contentWidthArr: OptionType[] = [
 	},
 ];
 
+// Экспорт массива опций размера шрифта
 export const fontSizeOptions: OptionType[] = [
 	{ title: '18px', value: '18px', className: 'font-size-18' },
 	{ title: '25px', value: '25px', className: 'font-size-25' },
 	{ title: '38px', value: '38px', className: 'font-size-38' },
 ];
 
+// Экспорт объекта с настройками статьи по умолчанию
 export const defaultArticleState = {
-	fontFamilyOption: fontFamilyOptions[0],
-	fontColor: fontColors[0],
-	backgroundColor: backgroundColors[0],
-	contentWidth: contentWidthArr[0],
-	fontSizeOption: fontSizeOptions[0],
+	fontFamilyOption: fontFamilyOptions[0], // Первый шрифт по умолчанию
+	fontColor: fontColors[0], // Первый цвет текста по умолчанию
+	backgroundColor: backgroundColors[0], // Первый цвет фона по умолчанию
+	contentWidth: contentWidthArr[0], // Первая ширина контента по умолчанию
+	fontSizeOption: fontSizeOptions[0], // Первый размер шрифта по умолчанию
 };
 
+// Экспорт типа ArticleStateType на основе defaultArticleState
 export type ArticleStateType = typeof defaultArticleState;
